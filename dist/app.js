@@ -13,8 +13,31 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 function intro(a,b){return '<div class="intro"><h1>'+a+'</h1><p>'+b+'</p></div>'}
 function pathCard(){return '<article class="card"><div class="heading"><h2>Minha trilha</h2><span class="tag">MUNDO 01</span></div><div class="world row"><span class="tile">'+icon('lab',24)+'</span><div><span class="eyebrow">MUNDO 01</span><strong>Da lógica às aplicações em Python</strong></div></div>'+units.map((u,i)=>'<button '+(i*4>stage?'disabled':'data-unit="'+i+'"')+' class="step row '+(i===Math.floor(stage/4)?'current':'')+'"><span class="node">'+icon(i*4>stage?'lock':'book')+'</span><div><label>Unidade 0'+(i+1)+'</label><strong>'+esc(u.title)+'</strong></div><span class="end">'+(i*4>stage?'':i*4+4<=stage?'✓':'›')+'</span></button>').join('')+'</article>'}
 function progress(){return '<article class="card"><div class="heading"><h2>Meu progresso</h2></div><div class="stats"><div class="stat">'+icon('bolt')+'<b>'+score()+'</b><label>XP total</label></div><div class="stat">'+icon('target')+'<b>'+stage+'</b><label>Atividades concluídas</label></div></div><div class="row space"><strong>'+ (score()<200?'Dev Iniciante':'Aprendiz de Código')+'</strong></div><div class="bar"><b style="width:'+Math.min(100,stage/totalStages*100)+'%"></b></div><label>'+stage+' de '+totalStages+' atividades da trilha inicial</label></article>'}
+function homePage() {
+  const next = Math.min(Math.floor(stage / 4), units.length - 1);
+  const actions = [
+    ['data-start', 'book', 'Continuar aprendendo', 'Retome sua atividade'],
+    ['data-go="lab"', 'lab', 'Laboratório Python', 'Escreva e execute código'],
+    ['data-go="ofensiva"', 'flame', 'Minha ofensiva', 'Veja seus dias de estudo'],
+    ['data-go="medal"', 'medal', 'Conquistas', 'Explore suas medalhas']
+  ];
+  const shortcuts = actions.map(([action,glyph,title,detail]) =>
+    `<button ${action}><span class="home-glyph">${icon(glyph,32)}</span><strong>${title}</strong><span>${detail}</span></button>`).join('');
+  const track = units.slice(Math.max(0, Math.min(next, units.length-3)), Math.max(0, Math.min(next, units.length-3))+3)
+    .map(u => {
+      const i = units.indexOf(u);
+      const locked = i*4 > stage;
+      return `<button class="home-unit" ${locked?'disabled':'data-unit="'+i+'"'}><span class="unit-art">${icon(['book','lab','trilha'][i%3],44)}</span><small>UNIDADE ${String(i+1).padStart(2,'0')}</small><strong>${esc(u.title)}</strong><span>${locked?'Bloqueada':stage >= i*4+4?'Concluída ✓':'Disponível →'}</span></button>`;
+    }).join('');
+  return `<div class="home-grid"><section><div class="welcome"><span class="welcome-mark" aria-hidden="true">{ }</span><div><h1>${stage?'Boas-vindas de volta!':'Boas-vindas ao CodeQuest!'}</h1><p class="sub">Aprenda Python com a Profª Joanne. Resolva exercícios, experimente no laboratório e avance na sua trilha.</p></div></div>
+    <h2>Por onde começar</h2><div class="home-actions">${shortcuts}</div>
+    <div class="heading"><h2>Unidades da trilha</h2><button class="link" data-go="trilha">Ver todas →</button></div><div class="home-units">${track}</div></section>
+    <section class="home-rail"><h2>Sua trilha</h2><button class="track-summary" data-go="trilha"><span class="tile">Py</span><span><strong>Lógica de programação em Python</strong><span class="bar"><b style="width:${stage/totalStages*100}%"></b></span><span>${stage} de ${totalStages} atividades concluídas</span></span></button><p class="tag">${score()} XP</p>
+    <article class="mentor card"><img src="joanne.webp" alt="Profª Joanne"><h2>Desafio do dia</h2><p class="sub">Coloque sua lógica à prova com uma pergunta da Profª Joanne.</p><button class="cta" data-daily>Resolver desafio →</button></article></section></div>`;
+}
 function render(){route=location.hash.slice(1)||'inicio';if(!tabs[route])route='inicio';$('nav').innerHTML=Object.entries(tabs).map(([k,v])=>'<button class="'+(route===k?'active':'')+'" data-go="'+k+'">'+icon(k==='ofensiva'?'flame':k)+v+'</button>').join('');$('#person').textContent=user?'Estudante':'Explorador';
-if(route==='inicio')view.innerHTML=intro('Central de missões','Acompanhe sua evolução e continue sua jornada em Python.')+'<article class="hero"><img src="joanne.webp" alt="Profª Joanne com seus fones e notebook"><div><span class="chip">⌘ &nbsp; MISSÃO PRINCIPAL</span><h2>Aprenda Python<br><em>com a Profª Joanne.</em></h2><p>Cada linha de código é um passo para uma nova conquista!</p><button class="cta" data-start>Continuar aprendendo <b>→</b></button></div></article><div class="cols">'+pathCard()+'<div>'+progress()+'<article class="card daily"><span class="eyebrow">✦ &nbsp; TREINO EXTRA</span><h2>Desafio do dia</h2><p class="sub">Teste sua lógica em uma missão rápida.</p><button class="link" data-daily>Abrir desafio →</button></article></div></div>';
+document.body.classList.toggle('home', route==='inicio');
+if(route==='inicio')view.innerHTML=homePage();
 if(route==='trilha')view.innerHTML=intro('Minha trilha','Explore as unidades e avance uma atividade por vez.')+'<div class="space">'+pathCard()+'</div>';
 if(route==='ofensiva'){view.innerHTML=intro('Ofensiva','Acompanhe seus dias consecutivos de estudo.')+'<div class="space" id="study-days"></div>';showOffensive($('#study-days'),user?.id)}
 if(route==='medal')view.innerHTML=intro('Conquistas','Suas medalhas acompanham o progresso na trilha.')+'<div class="card space">'+units.map((u,i)=>'<div class="step row"><span class="node">'+icon(stage>=4*i+4?'medal':'lock')+'</span><div><strong>'+['Primeiro algoritmo','Mestre da lógica','Explorador de fluxos','Guardião das decisões','Ninja das funções','Arquiteto de objetos','Guardião dos dados','Mestre dos eventos'][i]+'</strong><label>'+ (stage>=4*i+4?'Conquistada':'Conclua a unidade 0'+(i+1))+'</label></div></div>').join('')+'</div>';
