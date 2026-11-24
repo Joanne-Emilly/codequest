@@ -42,9 +42,9 @@ export async function getUser() {
 
 export async function getProgress() {
   const user = await getUser();
-  if (!user) return 0;
+  if (!user) return {stage:0, ed_stage:0};
   const client = await getClient();
-  return result(await client.from('cq_progress').select('stage').eq('student_id', user.id).maybeSingle())?.stage ?? 0;
+  return result(await client.from('cq_progress').select('stage,ed_stage').eq('student_id', user.id).maybeSingle()) ?? {stage:0, ed_stage:0};
 }
 
 export async function submit(stage, answer) {

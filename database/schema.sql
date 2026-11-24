@@ -77,6 +77,45 @@ insert into codequest_private.activities values
  (30,'0',30),
  (31,'"Laboratório aberto\nLaboratório fechado\nLaboratório aberto"',0);
 -- Practice outputs are formative. Never credit competitive XP for a browser result.
+alter table public.cq_progress add column ed_stage integer not null default 0 check(ed_stage between 0 and 36);
+alter table public.cq_attempts drop constraint cq_attempts_stage_check, add constraint cq_attempts_stage_check check(stage between 0 and 67);
+insert into codequest_private.activities values
+ (32,'true',5),
+ (33,'1',10),
+ (34,'0',30),
+ (35,'"5 9"',0),
+ (36,'true',5),
+ (37,'1',10),
+ (38,'2',30),
+ (39,'"12 21"',0),
+ (40,'true',5),
+ (41,'2',10),
+ (42,'0',30),
+ (43,'"Sol\nLua"',0),
+ (44,'true',5),
+ (45,'1',10),
+ (46,'2',30),
+ (47,'"4 9 13"',0),
+ (48,'true',5),
+ (49,'0',10),
+ (50,'1',30),
+ (51,'"1 2 3 6 8"',0),
+ (52,'true',5),
+ (53,'1',10),
+ (54,'2',30),
+ (55,'"2"',0),
+ (56,'true',5),
+ (57,'0',10),
+ (58,'1',30),
+ (59,'"8 3 6"',0),
+ (60,'true',5),
+ (61,'1',10),
+ (62,'2',30),
+ (63,'"2 2"',0),
+ (64,'true',5),
+ (65,'1',10),
+ (66,'2',30),
+ (67,'"A B C D"',0);
 create function public.cq_submit(p_stage integer, p_answer jsonb)
 returns jsonb language plpgsql security definer set search_path='' as $$
 declare
@@ -88,11 +127,11 @@ declare
   reward integer;
 begin
   if uid is null then raise exception 'Entre na sua conta.'; end if;
-  if p_stage is null or p_stage not between 0 and 31 or p_answer is null or octet_length(p_answer::text)>65536 then
+  if p_stage is null or p_stage not between 0 and 67 or p_answer is null or octet_length(p_answer::text)>65536 then
     raise exception 'Atividade ou resposta inválida.';
   end if;
   insert into public.cq_progress(student_id) values(uid) on conflict do nothing;
-  select p.stage,p.xp into current_stage,total_xp from public.cq_progress p where p.student_id=uid for update;
+  select case when p_stage >= 32 then p.ed_stage + 32 else p.stage end,p.xp into current_stage,total_xp from public.cq_progress p where p.student_id=uid for update;
   if p_stage > current_stage then raise exception 'Conclua a etapa anterior.'; end if;
   select a.expected,a.reward into expected_answer,reward from codequest_private.activities a where a.stage=p_stage;
   if p_stage % 4 = 3 then
@@ -106,25 +145,25 @@ begin
   if is_correct and p_stage=current_stage then
     current_stage := current_stage + 1;
     total_xp := total_xp + reward;
-    update public.cq_progress set stage=current_stage,xp=total_xp where student_id=uid;
+    update public.cq_progress set stage=case when p_stage < 32 then current_stage else stage end, ed_stage=case when p_stage >= 32 then current_stage-32 else ed_stage end,xp=total_xp where student_id=uid;
   else
     reward := 0;
   end if;
   insert into public.cq_attempts(student_id,stage,response,correct,awarded_xp) values(uid,p_stage,p_answer,is_correct,reward);
-  return jsonb_build_object('correct',is_correct,'stage',current_stage,'xp',total_xp);
+  return jsonb_build_object('correct',is_correct,'stage',case when p_stage >= 32 then current_stage-32 else current_stage end,'xp',total_xp);
 end;
 $$;
 
 create function public.cq_teacher_report()
 returns table(student_id uuid, display_name text, class_name text,stage integer,xp integer,attempts bigint,correct_attempts bigint,last_activity timestamptz)
 language sql stable security invoker set search_path='' as $$
-  select e.student_id,e.display_name,c.name,coalesce(p.stage,0),coalesce(p.xp,0),
+  select e.student_id,e.display_name,c.name,coalesce(p.stage+p.ed_stage,0),coalesce(p.xp,0),
     count(a.id),count(a.id) filter(where a.correct),max(a.created_at)
   from public.cq_classes c join public.cq_enrollments e on e.class_id=c.id
   left join public.cq_progress p on p.student_id=e.student_id
   left join public.cq_attempts a on a.student_id=e.student_id
   where c.teacher_id=auth.uid()
-  group by c.id,c.name,e.student_id,e.display_name,p.stage,p.xp order by c.name,e.display_name;
+  group by c.id,c.name,e.student_id,e.display_name,p.stage,p.ed_stage,p.xp order by c.name,e.display_name;
 $$;
 revoke all on function public.cq_submit(integer,jsonb),public.cq_teacher_report() from public,anon;
 grant execute on function public.cq_submit(integer,jsonb),public.cq_teacher_report() to authenticated;
