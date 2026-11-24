@@ -1,0 +1,57 @@
+// Atividades autorais do Mundo 1. Índices de respostas começam em zero.
+export const units = [
+  {
+    title: "Pensamento computacional",
+    lesson: "Como descobrir quantos notebooks a turma precisa? Primeiro, divida o problema em partes. Conte as equipes, descubra quantos aparelhos cada uma usa e combine os resultados. Essa estratégia se chama decomposição. Se todas as equipes usam a mesma quantidade, você encontrou um padrão. A cor dos notebooks pode ficar de fora do cálculo: escolher os detalhes que importam é abstrair.",
+    example: "# Quatro equipes usam dois notebooks cada.\nequipes = 4\npor_equipe = 2\nprint(equipes * por_equipe)",
+    question: "Qual informação você precisa para calcular quantos notebooks reservar?",
+    options: ["A cor dos notebooks", "O número de equipes e de aparelhos por equipe", "O nome de cada participante"],
+    answer: 1,
+    feedback: "Multiplique a quantidade de equipes pela quantidade de aparelhos de cada equipe.",
+    quiz: "Ao dividir a organização de uma feira em inscrições, salas e horários, você está praticando…",
+    quizOptions: ["Decomposição", "Repetição", "Depuração"],
+    quizAnswer: 0,
+    quizFeedback: "Cada parte pode ser resolvida separadamente e depois integrada ao planejamento.",
+    hint: "Pense em três grupos iguais. O que é mais curto: somar a quantidade de cada grupo ou multiplicar?",
+    hints: ["Desenhe uma caixa para cada equipe.", "Grupos com o mesmo tamanho permitem usar multiplicação.", "Em Python, o asterisco (*) multiplica dois números."],
+    practice: "Três equipes vão testar quatro sensores cada. Calcule o total usando Python e mostre apenas o número no terminal.",
+    starter: "# Calcule o total de sensores.\nequipes = 3\nsensores_por_equipe = 4\n",
+    expected: "12"
+  },
+  {
+    title: "Lógica de programação",
+    lesson: "No placar de um jogo, a ordem das instruções muda o resultado. Primeiro registre o saldo, depois some a recompensa e, por último, mostre o novo valor. O sinal = guarda o resultado da expressão à direita no nome que aparece à esquerda. Para acompanhar o programa à mão, anote quanto vale cada variável após cada linha.",
+    example: "pontos = 10          # saldo inicial\npontos = pontos + 5  # guarda o novo saldo\nprint(pontos)        # mostra 15",
+    question: "Se o programa mostrar os pontos antes de somar o bônus, qual saldo aparecerá no exemplo?",
+    options: ["5", "15", "10"],
+    answer: 2,
+    feedback: "Antes da atualização, a variável ainda guarda os 10 pontos iniciais.",
+    quiz: "Uma fase começa com 8 moedas. O código executa moedas = moedas - 3 e depois print(moedas). O que aparece?",
+    quizOptions: ["3", "5", "8"],
+    quizAnswer: 1,
+    quizFeedback: "O lado direito calcula 8 menos 3. Só então o resultado 5 é guardado em moedas.",
+    hint: "A pontuação final depende do saldo inicial e das duas recompensas. Mostre o resultado depois das atualizações.",
+    hints: ["Liste os três valores do problema.", "Somar o bônus atualiza o saldo do jogo.", "Use print(pontos) após calcular o saldo final."],
+    practice: "Sua equipe começa com 12 pontos e ganha dois bônus, de 8 e 5 pontos. Atualize a variável pontos e mostre apenas o saldo final.",
+    starter: "pontos = 12\n# Some os dois bônus e mostre o saldo.\n",
+    expected: "25"
+  },
+  {
+    title: "Algoritmos, pseudocódigo e fluxogramas",
+    lesson: "Um algoritmo é uma sequência de passos que resolve um problema. Antes de programar, escreva esses passos em português simples: esse é o pseudocódigo. Em um fluxograma, as setas mostram o caminho entre as etapas e um losango representa uma decisão. Para conferir a sequência, percorra as setas com um exemplo real e observe em que saída você chega.",
+    example: "# Pseudocódigo: contar pacotes → calcular itens → mostrar total\npacotes = 3\nitens = pacotes * 5\nprint(itens)",
+    question: "Para mostrar o total de itens de uma encomenda, qual sequência faz sentido?",
+    options: ["Calcular o total → descobrir a quantidade → mostrar", "Mostrar o total → calcular → contar", "Contar os pacotes → calcular o total → mostrar"],
+    answer: 2,
+    feedback: "O cálculo depende da contagem, e a exibição depende do resultado do cálculo.",
+    quiz: "Qual etapa de um fluxograma deve ter duas saídas, uma para sim e outra para não?",
+    quizOptions: ["Mostrar a mensagem final", "Perguntar se há vagas", "Registrar o nome"],
+    quizAnswer: 1,
+    quizFeedback: "A pergunta define qual caminho o algoritmo deve seguir.",
+    hint: "Siga as setas do roteiro na ordem. Em Python, cada print pode mostrar uma etapa em uma linha.",
+    hints: ["Leia os três passos do roteiro de cima para baixo.", "Uma sequência de print mantém a ordem das linhas.", "Coloque cada palavra entre aspas para tratá-la como texto."],
+    practice: "Traduza o roteiro de uma oficina para Python. Mostre as palavras Preparar, Testar e Apresentar, nessa ordem, cada uma em sua própria linha e com inicial maiúscula.",
+    starter: "# Escreva uma instrução para cada etapa da oficina.\n",
+    expected: "Preparar\nTestar\nApresentar"
+  }
+];
