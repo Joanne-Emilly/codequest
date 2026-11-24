@@ -29,7 +29,7 @@ function homePage() {
       const locked = i*4 > stage;
       return `<button class="home-unit" ${locked?'disabled':'data-unit="'+i+'"'}><span class="unit-art">${icon(['book','lab','trilha'][i%3],44)}</span><small>UNIDADE ${String(i+1).padStart(2,'0')}</small><strong>${esc(u.title)}</strong><span>${locked?'Bloqueada':stage >= i*4+4?'Concluída ✓':'Disponível →'}</span></button>`;
     }).join('');
-  return `<div class="home-grid"><section><div class="welcome"><span class="welcome-mark" aria-hidden="true">{ }</span><div><h1>${stage?'Boas-vindas de volta!':'Boas-vindas ao CodeQuest!'}</h1><p class="sub">Aprenda Python com a Profª Joanne. Resolva exercícios, experimente no laboratório e avance na sua trilha.</p></div></div>
+  return `<div class="home-grid"><section><div class="welcome"><span class="welcome-mark" aria-hidden="true">{ }</span><div><h1>${stage?'Boas-vindas de volta!':'Boas-vindas ao CodeQuest!'}</h1><p class="sub">Venha Aprender Programação na CodeQuest. Resolva exercícios, experimente no laboratório e avance na sua trilha.</p></div></div>
     <h2>Por onde começar</h2><div class="home-actions">${shortcuts}</div>
     <div class="heading"><h2>Unidades da trilha</h2><button class="link" data-go="trilha">Ver todas →</button></div><div class="home-units">${track}</div></section>
     <section class="home-rail"><h2>Sua trilha</h2><button class="track-summary" data-go="trilha"><span class="tile">Py</span><span><strong>Lógica de programação em Python</strong><span class="bar"><b style="width:${stage/totalStages*100}%"></b></span><span>${stage} de ${totalStages} atividades concluídas</span></span></button><p class="tag">${score()} XP</p>
