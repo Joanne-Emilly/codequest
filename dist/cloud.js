@@ -63,3 +63,17 @@ export async function teacherReport() {
   const client = await getClient();
   return result(await client.rpc('cq_teacher_report'));
 }
+
+export async function studyAttempts(studentId) {
+  const client = await getClient();
+  const attempts = [];
+  let after = 0;
+  while (true) {
+    const page = result(await client.from('cq_attempts').select('id,stage,created_at')
+      .eq('student_id', studentId).eq('correct', true).gt('id', after)
+      .order('id').limit(500));
+    attempts.push(...page);
+    if (page.length < 500) return attempts;
+    after = page[page.length - 1].id;
+  }
+}
