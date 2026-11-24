@@ -53,5 +53,130 @@ export const units = [
     practice: "Traduza o roteiro de uma oficina para Python. Mostre as palavras Preparar, Testar e Apresentar, nessa ordem, cada uma em sua própria linha e com inicial maiúscula.",
     starter: "# Escreva uma instrução para cada etapa da oficina.\n",
     expected: "Preparar\nTestar\nApresentar"
-  }
+  },
+{
+  "title": "Decisões e repetição",
+  "source": "Marcos Roberto Ribeiro, Python Avançado (IFMG, 2022), §§ 1.5–1.6, pp. 24–30.",
+  "lesson": "No laboratório, cada sensor envia uma temperatura. Para contar os alertas, comece com zero, percorra as leituras com for e some um apenas quando o if reconhecer uma temperatura alta. Experimente trocar >= por > e observe o que acontece com o valor da fronteira.",
+  "example": "alertas = 0\nfor temperatura in [28, 30, 32]:\n    if temperatura >= 30:\n        alertas += 1\nprint(alertas)",
+  "question": "Por que a leitura 30 entra na contagem?",
+  "options": [
+    "Porque é a segunda leitura",
+    "Porque >= inclui a igualdade",
+    "Porque for arredonda números"
+  ],
+  "answer": 1,
+  "quiz": "Quantos alertas o exemplo registra se o limite subir para 32?",
+  "quizOptions": [
+    "Zero",
+    "Dois",
+    "Um"
+  ],
+  "quizAnswer": 2,
+  "quizFeedback": "Só a leitura 32 alcança o novo limite.",
+  "practice": "Conte quantas das notas 5, 7, 9 e 6 atingem pelo menos 7. Imprima a quantidade.",
+  "starter": "notas = [5, 7, 9, 6]\n",
+  "hint": "Marque primeiro, no papel, quais notas passam no teste. Inicialize o contador antes do laço.",
+  "expected": "2"
+},
+{
+  "title": "Funções e retorno",
+  "source": "Marcos Roberto Ribeiro, Python Avançado (IFMG, 2022), §§ 1.8.1–1.8.3, pp. 34–35.",
+  "lesson": "Uma função permite repetir um cálculo com dados diferentes. O parâmetro recebe o valor de cada chamada. Use return para entregar o resultado ao restante do programa. Assim, quem chama a função decide se vai mostrar, guardar ou somar esse resultado.",
+  "example": "def dobro(valor):\n    return valor * 2\n\npontos = dobro(4) + dobro(3)\nprint(pontos)",
+  "question": "Quanto vale dobro(3)?",
+  "options": [
+    "3",
+    "9",
+    "6"
+  ],
+  "answer": 2,
+  "quiz": "Se uma função só executa print(6) e termina, qual valor ela devolve?",
+  "quizOptions": [
+    "None",
+    "6",
+    "Uma lista"
+  ],
+  "quizAnswer": 0,
+  "quizFeedback": "Sem return explícito, a função devolve None.",
+  "practice": "Crie a função saldo(inicial, gasto) que devolve a diferença. Mostre em linhas separadas os resultados para (20, 7) e (9, 4).",
+  "starter": "def saldo(inicial, gasto):\n    pass\n",
+  "hint": "Guarde o print para o ponto de chamada. Dentro da função, devolva a diferença.",
+  "expected": "13\n5"
+},
+{
+  "title": "Classes e objetos",
+  "source": "Marcos Roberto Ribeiro, Python Avançado (IFMG, 2022), § 2.2, pp. 55–56.",
+  "lesson": "Imagine duas equipes com placares independentes. Uma classe descreve o que toda equipe guarda e faz. Ao criar cada objeto, __init__ inicia seu placar. Em um método, self indica qual equipe recebeu a chamada. Por isso atualizar uma equipe não altera o saldo da outra.",
+  "example": "class Equipe:\n    def __init__(self):\n        self.pontos = 0\n    def marcar(self):\n        self.pontos += 1\n\nazul = Equipe()\nverde = Equipe()\nazul.marcar()\nprint(azul.pontos, verde.pontos)",
+  "question": "O que o exemplo imprime?",
+  "options": [
+    "1 1",
+    "1 0",
+    "0 1"
+  ],
+  "answer": 1,
+  "quiz": "Qual expressão cria outra equipe com placar próprio?",
+  "quizOptions": [
+    "outra = azul",
+    "outra = azul.pontos",
+    "outra = Equipe()"
+  ],
+  "quizAnswer": 2,
+  "quizFeedback": "Uma chamada à classe cria outra instância. A atribuição outra = azul compartilha o mesmo objeto.",
+  "practice": "Implemente um contador de visitas com um método visitar. Crie dois contadores, registre duas visitas no primeiro e uma no segundo. Mostre os totais separados por espaço.",
+  "starter": "class Contador:\n    def __init__(self):\n        self.total = 0\n    def visitar(self):\n        pass\n",
+  "hint": "Use self.total dentro do método e crie o segundo contador com uma nova chamada a Contador().",
+  "expected": "2 1"
+},
+{
+  "title": "Salvando dados em JSON",
+  "source": "Marcos Roberto Ribeiro, Python Avançado (IFMG, 2022), § 3.5, pp. 102–108.",
+  "lesson": "Uma lista de atividades pode ser salva em um arquivo para leitura posterior. O módulo json converte dicionários e listas em texto estruturado. Com um arquivo aberto em modo w, dump grava os dados. Para reconstruí-los, abra o arquivo em modo r e use load. No laboratório do CodeQuest, faça a gravação e a leitura na mesma execução.",
+  "example": "import json\nwith open('turma.json', 'w') as arquivo:\n    json.dump({'equipes': 4}, arquivo)\nwith open('turma.json') as arquivo:\n    turma = json.load(arquivo)\nprint(turma['equipes'])",
+  "question": "Qual operação reconstrói o dicionário a partir do arquivo?",
+  "options": [
+    "json.load(arquivo)",
+    "json.dump(turma, arquivo)",
+    "print(arquivo)"
+  ],
+  "answer": 0,
+  "quiz": "O que acontece ao abrir um arquivo existente no modo w?",
+  "quizOptions": [
+    "Os dados sempre vão para o fim",
+    "O conteúdo anterior é apagado",
+    "O arquivo fica somente para leitura"
+  ],
+  "quizAnswer": 1,
+  "quizFeedback": "O modo w começa uma nova escrita, truncando o conteúdo anterior.",
+  "practice": "Grave o dicionário abaixo em placar.json. Leia-o novamente e mostre a soma dos pontos das duas equipes.",
+  "starter": "import json\nplacar = {'azul': 8, 'verde': 5}\n",
+  "hint": "Use dois blocos with. Calcule a soma com o dicionário obtido pelo load.",
+  "expected": "13"
+},
+{
+  "title": "Eventos e ações de uma interface",
+  "source": "Marcos Roberto Ribeiro, Python Avançado (IFMG, 2022), §§ 4.2–4.4, pp. 121–127.",
+  "lesson": "Em uma interface gráfica, o clique é um evento. No livro, um sinal de botão é ligado a um método que responde ao clique. Aqui vamos simular essa ligação no terminal. O dicionário abaixo guarda a função sem executá-la. Quando chega o evento, os parênteses chamam a função associada.",
+  "example": "def saudar():\n    print('Olá, turma!')\n\nacoes = {'entrar': saudar}\nacoes['entrar']()",
+  "question": "Por que guardar saudar sem parênteses?",
+  "options": [
+    "Para apagar a função",
+    "Para transformá-la em texto",
+    "Para chamar a função quando o evento ocorrer"
+  ],
+  "answer": 2,
+  "quiz": "Se você retirar os parênteses da última linha, o que acontece?",
+  "quizOptions": [
+    "A função é consultada, mas a saudação não é impressa",
+    "O evento ocorre duas vezes",
+    "A função é apagada"
+  ],
+  "quizAnswer": 0,
+  "quizFeedback": "A consulta devolve a função. Os parênteses executam seu corpo.",
+  "practice": "Crie as funções abrir e fechar para imprimir Laboratório aberto e Laboratório fechado. Associe cada função ao evento correspondente e processe a sequência fornecida.",
+  "starter": "eventos = ['abrir', 'fechar', 'abrir']\n",
+  "hint": "Monte um dicionário de funções e, dentro de um for, chame a ação correspondente à chave atual.",
+  "expected": "Laboratório aberto\nLaboratório fechado\nLaboratório aberto"
+}
 ];

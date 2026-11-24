@@ -20,13 +20,13 @@ create table public.cq_enrollments (
 );
 create table public.cq_progress (
   student_id uuid primary key references auth.users on delete cascade,
-  stage integer not null default 0 check(stage between 0 and 12),
+  stage integer not null default 0 check(stage between 0 and 32),
   xp integer not null default 0 check(xp>=0)
 );
 create table public.cq_attempts (
   id bigint generated always as identity primary key,
   student_id uuid not null references auth.users on delete cascade,
-  stage integer not null check(stage between 0 and 11),
+  stage integer not null check(stage between 0 and 31),
   response jsonb not null,
   correct boolean not null,
   awarded_xp integer not null default 0,
@@ -55,7 +55,27 @@ create table codequest_private.activities(
 insert into codequest_private.activities values
  (0,'true',5),(1,'1',10),(2,'0',30),(3,'"12"',0),
  (4,'true',5),(5,'2',10),(6,'1',30),(7,'"25"',0),
- (8,'true',5),(9,'2',10),(10,'1',30),(11,'"Preparar\nTestar\nApresentar"',0);
+ (8,'true',5),(9,'2',10),(10,'1',30),(11,'"Preparar\nTestar\nApresentar"',0),
+ (12,'true',5),
+ (13,'1',10),
+ (14,'2',30),
+ (15,'"2"',0),
+ (16,'true',5),
+ (17,'2',10),
+ (18,'0',30),
+ (19,'"13\n5"',0),
+ (20,'true',5),
+ (21,'1',10),
+ (22,'2',30),
+ (23,'"2 1"',0),
+ (24,'true',5),
+ (25,'0',10),
+ (26,'1',30),
+ (27,'"13"',0),
+ (28,'true',5),
+ (29,'2',10),
+ (30,'0',30),
+ (31,'"Laboratório aberto\nLaboratório fechado\nLaboratório aberto"',0);
 -- Practice outputs are formative. Never credit competitive XP for a browser result.
 create function public.cq_submit(p_stage integer, p_answer jsonb)
 returns jsonb language plpgsql security definer set search_path='' as $$
@@ -68,7 +88,7 @@ declare
   reward integer;
 begin
   if uid is null then raise exception 'Entre na sua conta.'; end if;
-  if p_stage is null or p_stage not between 0 and 11 or p_answer is null or octet_length(p_answer::text)>65536 then
+  if p_stage is null or p_stage not between 0 and 31 or p_answer is null or octet_length(p_answer::text)>65536 then
     raise exception 'Atividade ou resposta inválida.';
   end if;
   insert into public.cq_progress(student_id) values(uid) on conflict do nothing;
